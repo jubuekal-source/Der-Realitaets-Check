@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stille Challenge | Klarkommen</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0f1923;
+            --accent: #f97316; /* Dein Orange aus dem Sorgen-Rechner */
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        #timer {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px; /* Eckiger Stil wie in deiner Vorlage */
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background-color: #1c2e40;
+            color: var(--text-secondary);
+            cursor: default;
+            box-shadow: none;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stille Challenge</h1>
+    <div id="timer">02:00</div>
+    <button id="startBtn" class="btn">Challenge starten</button>
+
+    <audio id="alarm" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <script>
+        let timeLeft = 120;
+        let timerId = null;
+        const display = document.getElementById('timer');
+        const btn = document.getElementById('startBtn');
+        const alarm = document.getElementById('alarm');
+
+        btn.addEventListener('click', () => {
+            if (timerId) return;
+
+            // Browser-Audio-Unlock
+            alarm.play().then(() => { alarm.pause(); alarm.currentTime = 0; }).catch(() => {});
+
+            btn.innerText = "In Stille eintauchen...";
+            btn.disabled = true;
+
+            timerId = setInterval(() => {
+                timeLeft--;
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+                display.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    alarm.play();
+                    display.style.color = "var(--accent)";
+                    btn.innerText = "Challenge beendet";
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
